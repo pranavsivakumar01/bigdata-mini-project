@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Description Generator</title>
+</head>
+<body>
+    <h1>Generate a Product Description</h1>
+    <input type="text" id="product_name" placeholder="Enter product name">
+    <button onclick="generateDescription()">Generate</button>
+    <p id="description_output"></p>
+    <script>
+        async function generateDescription() {
+            const productName = document.getElementById('product_name').value;
+            try {
+                const response = await fetch('http://127.0.0.1:620/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ product_name: productName }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                document.getElementById('description_output').textContent = data.description || "Error: Description not generated.";
+            } catch (error) {
+                document.getElementById('description_output').textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
